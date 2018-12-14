@@ -9,6 +9,10 @@
     />
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="css/bootstrap.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.min.css"
+    />
     <title>Image Uploader</title>
     <style>
       html,
@@ -44,8 +48,8 @@
         justify-content: center;
         align-items: center;
         width: 100%;
-        margin-top: 2rem;
-        /* height: 100%; */
+        /* margin-top: 2rem; */
+        height: 100%;
       }
       .file {
         margin-right: 1rem;
@@ -60,10 +64,13 @@
       .progress-span {
         float: none !important;
       }
+      .progress-bar-container {
+        display: none;
+      }
     </style>
   </head>
   <body>
-    <div class="container test">
+    <div class="container test" ondrop="dropHandler(event);" ondragover="dragOverHandler(event);">
       <div class="row">
         <div class="col-md-12">
           <div class="text-center">
@@ -72,13 +79,22 @@
             <div class="choose-file">
               <span><hr /></span> <span>or</span> <span><hr /></span>
             </div>
-            <button class="btn btn-outline-primary btn-lg">choose file</button>
+            <button
+              id="choose-file"
+              type="button"
+              class="btn btn-outline-primary btn-lg"
+            >
+              choose file
+            </button>
           </div>
         </div>
       </div>
     </div>
 
-    <div class="container" style="margin-top:20px; margin-bottom:40px;">
+    <div
+      class="container progress-bar-container"
+      style="margin-top:20px; margin-bottom:40px;"
+    >
       <div class="row">
         <div class="col-md-6 mx-auto">
           <div class="choose-file">
@@ -101,77 +117,62 @@
         </div>
       </div>
     </div>
+    <script>
+      function dropHandler(ev) {
+        ev.preventDefault()
+        if(ev.dataTransfer.items) {
+          const file = ev.dataTransfer.items.getAsFile()
+          console.log('the file', file)
 
-    <div class="container" style="margin-top:20px; margin-bottom:40px;">
-      <div class="row">
-        <div class="col-md-6 mx-auto">
-          <div class="choose-file">
-            <span><img class="file" src="icons/file.svg" width="30"/></span>
-            <span class="icon"
-              ><img class="file" src="icons/success.svg" width="30"
-            /></span>
-            <span class="progress-span">
-              <span>arsenal.svg</span>
-              <span class="right">
-                <span>96 </span> <span>Mb </span> <span>/ </span>
-                <span>96 </span> <span>Mb </span> <span>-</span>
-                <span>75%</span>
-              </span>
-              <div class="progress" style="height:6px;">
-                <div class="progress-bar" style="width:75%;"></div>
-              </div>
-            </span>
-          </div>
-        </div>
-      </div>
-    </div>
+        }
+      }
 
-    <div class="container" style="margin-top:20px; margin-bottom:40px;">
-      <div class="row">
-        <div class="col-md-6 mx-auto">
-          <div class="choose-file">
-            <span><img class="file" src="icons/file.svg" width="30"/></span>
-            <span class="icon"
-              ><img class="file" src="icons/success.svg" width="30"
-            /></span>
-            <span class="progress-span">
-              <span>arsenal.svg</span>
-              <span class="right">
-                <span>96 </span> <span>Mb </span> <span>/ </span>
-                <span>96 </span> <span>Mb </span> <span>-</span>
-                <span>75%</span>
-              </span>
-              <div class="progress" style="height:6px;">
-                <div class="progress-bar" style="width:75%;"></div>
-              </div>
-            </span>
-          </div>
-        </div>
-      </div>
-    </div>
+      function dragOverHandler (ev) {
+        ev.preventDefault()
+      }
+      function whichAnimationEvent() {
+        let t;
+        let el = document.createElement("fakeelement");
+        let animations = {
+          animation: "animationend",
+          OAnimation: "oAnimationEnd",
+          MozAnimation: "animationend",
+          WebkitAnimation: "webkitAnimationEnd"
+        };
+        for (t in animations) {
+          if (el.style[t] !== undefined) {
+            return animations[t];
+          }
+        }
+      }
 
-    <div class="container" style="margin-top:20px; margin-bottom:40px;">
-      <div class="row">
-        <div class="col-md-6 mx-auto">
-          <div class="choose-file">
-            <span><img class="file" src="icons/file.svg" width="30"/></span>
-            <span class="icon"
-              ><img class="file" src="icons/success.svg" width="30"
-            /></span>
-            <span class="progress-span">
-              <span>arsenal.svg</span>
-              <span class="right">
-                <span>96 </span> <span>Mb </span> <span>/ </span>
-                <span>96 </span> <span>Mb </span> <span>-</span>
-                <span>75%</span>
-              </span>
-              <div class="progress" style="height:6px;">
-                <div class="progress-bar" style="width:75%;"></div>
-              </div>
-            </span>
-          </div>
-        </div>
-      </div>
-    </div>
+      // document.querySelector("#choose-file").onclick = () => {
+      //   document.querySelector(".test").style.height = "auto";
+      //   document.querySelector(".test").style.marginTop = "2rem";
+      //   document.querySelector(".test").classList.add("animated");
+      //   document.querySelector(".test").classList.add("slideInUp");
+      //   document.querySelector(".test").classList.add("fast");
+      //   const animationEvent = whichAnimationEvent();
+      //   document
+      //     .querySelector(".test")
+      //     .addEventListener(animationEvent, customFunction);
+      //   function customFunction(event) {
+      //     document
+      //       .querySelector(".test")
+      //       .removeEventListener(animationEvent, customFunction);
+      //     document.querySelector(".progress-bar-container").style.display =
+      //       "block";
+      //     document
+      //       .querySelector(".progress-bar-container")
+      //       .classList.add("animated");
+      //     document
+      //       .querySelector(".progress-bar-container")
+      //       .classList.add("zoomIn");
+      //     document
+      //       .querySelector(".progress-bar-container")
+      //       .classList.add("fast");
+      //   }
+      // };
+    </script>
   </body>
 </html>
