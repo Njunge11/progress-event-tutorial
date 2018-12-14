@@ -120,11 +120,19 @@
     <script>
       function dropHandler(ev) {
         ev.preventDefault()
-        if(ev.dataTransfer.items) {
-          const file = ev.dataTransfer.items.getAsFile()
-          console.log('the file', file)
-
-        }
+        for (var i = 0; i < ev.dataTransfer.items.length; i++) {
+      // If dropped items aren't files, reject them
+      if (ev.dataTransfer.items[i].kind === 'file') {
+        var file = ev.dataTransfer.items[i].getAsFile();
+        console.log('... file[' + i + '].name = ' + file.name);
+      }
+      //TO-DO
+      // Drop files
+      // Once the first file is loaded initiate animation sequence, upload file to server and load the progress bar
+      // for each subsequent file load the progress bar
+      // Utilize the ProgressEventInterface to display progression
+      // Make code production quality - error handling + tests
+    }
       }
 
       function dragOverHandler (ev) {
