@@ -65,12 +65,18 @@
         float: none !important;
       }
       .progress-bar-container {
-        display: none;
+        /* display: none; */
+        margin-top: 20px;
+        margin-bottom: 40px;
       }
     </style>
   </head>
   <body>
-    <div class="container test" ondrop="dropHandler(event);" ondragover="dragOverHandler(event);">
+    <div
+      class="container test"
+      ondrop="dropHandler(event);"
+      ondragover="dragOverHandler(event);"
+    >
       <div class="row">
         <div class="col-md-12">
           <div class="text-center">
@@ -91,52 +97,46 @@
       </div>
     </div>
 
-    <div
-      class="container progress-bar-container"
-      style="margin-top:20px; margin-bottom:40px;"
-    >
-      <div class="row">
-        <div class="col-md-6 mx-auto">
-          <div class="choose-file">
-            <span><img class="file" src="icons/file.svg" width="30"/></span>
-            <span class="icon"
-              ><img class="file" src="icons/success.svg" width="30"
-            /></span>
-            <span class="progress-span">
-              <span>arsenal.svg</span>
-              <span class="right">
-                <span>96 </span> <span>Mb </span> <span>/ </span>
-                <span>96 </span> <span>Mb </span> <span>-</span>
-                <span>75%</span>
-              </span>
-              <div class="progress" style="height:6px;">
-                <div class="progress-bar" style="width:75%;"></div>
-              </div>
-            </span>
-          </div>
-        </div>
-      </div>
-    </div>
+    <div class="one"></div>
     <script>
       function dropHandler(ev) {
-        ev.preventDefault()
+        ev.preventDefault();
+        let count = [];
         for (var i = 0; i < ev.dataTransfer.items.length; i++) {
-      // If dropped items aren't files, reject them
-      if (ev.dataTransfer.items[i].kind === 'file') {
-        var file = ev.dataTransfer.items[i].getAsFile();
-        console.log('... file[' + i + '].name = ' + file.name);
-      }
-      //TO-DO
-      // Drop files
-      // Once the first file is loaded initiate animation sequence, upload file to server and load the progress bar
-      // for each subsequent file load the progress bar
-      // Utilize the ProgressEventInterface to display progression
-      // Make code production quality - error handling + tests
-    }
+          count.push(i);
+          // If dropped items aren't files, reject them
+          if (ev.dataTransfer.items[i].kind === "file") {
+            var file = ev.dataTransfer.items[i].getAsFile();
+            console.log("... file[" + i + "].name = " + file.name);
+            document.querySelector(".test").style.height = "auto";
+            document.querySelector(".test").style.marginTop = "2rem";
+            document.querySelector(".test").classList.add("animated");
+            document.querySelector(".test").classList.add("slideInUp");
+            document.querySelector(".test").classList.add("fast");
+
+            const animationEvent = whichAnimationEvent();
+            document.querySelector(".test").addEventListener(animationEvent, customFunction);
+
+            function customFunction(event) {
+              document.querySelector(".test").removeEventListener(animationEvent, customFunction);
+                progressBar();
+              document.querySelector(".progress-bar-container").style.display = "block";
+              document.querySelector(".progress-bar-container").classList.add("animated");
+              document.querySelector(".progress-bar-container").classList.add("zoomIn");
+              document.querySelector(".progress-bar-container").classList.add("fast");
+            }
+            //TO-DO
+            // Drop files
+            // Once the first file is loaded initiate animation sequence, upload file to server and load the progress bar
+            // for each subsequent file load the progress bar
+            // Utilize the ProgressEventInterface to display progression
+            // Make code production quality - error handling + tests
+          }
+        }
       }
 
-      function dragOverHandler (ev) {
-        ev.preventDefault()
+      function dragOverHandler(ev) {
+        ev.preventDefault();
       }
       function whichAnimationEvent() {
         let t;
@@ -154,33 +154,91 @@
         }
       }
 
-      // document.querySelector("#choose-file").onclick = () => {
-      //   document.querySelector(".test").style.height = "auto";
-      //   document.querySelector(".test").style.marginTop = "2rem";
-      //   document.querySelector(".test").classList.add("animated");
-      //   document.querySelector(".test").classList.add("slideInUp");
-      //   document.querySelector(".test").classList.add("fast");
-      //   const animationEvent = whichAnimationEvent();
-      //   document
-      //     .querySelector(".test")
-      //     .addEventListener(animationEvent, customFunction);
-      //   function customFunction(event) {
-      //     document
-      //       .querySelector(".test")
-      //       .removeEventListener(animationEvent, customFunction);
-      //     document.querySelector(".progress-bar-container").style.display =
-      //       "block";
-      //     document
-      //       .querySelector(".progress-bar-container")
-      //       .classList.add("animated");
-      //     document
-      //       .querySelector(".progress-bar-container")
-      //       .classList.add("zoomIn");
-      //     document
-      //       .querySelector(".progress-bar-container")
-      //       .classList.add("fast");
-      //   }
-      // };
+      function progressBar() {
+        console.log('add progress bar')
+        const container = document.createElement("div");
+        container.className = "container progress-bar-container";
+        const firstRow = document.createElement("div");
+        firstRow.className = "row";
+        const firstColumn = document.createElement("div");
+        firstColumn.className = "col-md-6 mx-auto";
+
+        const structure = document.createElement("div");
+        structure.className = "choose-file";
+        // Append 1
+        const fileSpan = document.createElement("span");
+        const fileIcon = document.createElement("img");
+        fileIcon.className = "file";
+        fileIcon.src = "icons/file.svg";
+        fileIcon.width = "30";
+        fileSpan.appendChild(fileIcon);
+        // Append 2
+        const statusSpan = document.createElement("span");
+        statusSpan.className = "icon";
+        const statusIcon = document.createElement("img");
+        statusIcon.className = "file";
+        statusIcon.src = "icons/success.svg";
+        statusIcon.width = "30";
+        statusSpan.appendChild(statusIcon);
+        // Append 3
+        const progressSpan = document.createElement("div");
+        progressSpan.className = "progress-span";
+        //Append 1
+        const fileName = document.createElement("span");
+        fileName.textContent = "arsenal.svg";
+        //Append 2
+        const fileDetails = document.createElement("span");
+        fileDetails.className = "right";
+
+        const progressNumber = document.createElement("span");
+        progressNumber.textContent = "96";
+
+        const progressSize = document.createElement("span");
+        progressSize.textContent = "Mb";
+        const slash = document.createElement("span");
+        slash.textContent = "/";
+
+        const fullNumber = document.createElement("span");
+        fullNumber.textContent = "96";
+        const fullSize = document.createElement("span");
+        fullSize.textContent = "Mb";
+
+        const hyphen = document.createElement("span");
+        hyphen.textContent = "-";
+        const percentage = document.createElement("span");
+        percentage.textContent = "75%";
+
+        fileDetails.appendChild(progressNumber);
+        fileDetails.appendChild(progressSize);
+        fileDetails.appendChild(slash);
+        fileDetails.appendChild(fullNumber);
+        fileDetails.appendChild(fullSize);
+        fileDetails.appendChild(hyphen);
+        fileDetails.appendChild(percentage);
+
+        const progressBar = document.createElement("div");
+        progressBar.className = "progress";
+        progressBar.style.height = "6px";
+
+        const progressBarDiv = document.createElement("div");
+        progressBarDiv.className = "progress-bar";
+        progressBarDiv.style.width = "75%";
+        progressBar.appendChild(progressBarDiv);
+
+        progressSpan.appendChild(fileName);
+        progressSpan.appendChild(fileDetails);
+        progressSpan.appendChild(progressBar);
+
+        structure.appendChild(fileSpan);
+        structure.appendChild(statusSpan);
+        structure.appendChild(progressSpan);
+
+        firstColumn.appendChild(structure);
+
+        firstRow.appendChild(firstColumn);
+        container.appendChild(firstRow);
+        document.querySelector(".one").appendChild(container);
+      }
     </script>
   </body>
 </html>
