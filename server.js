@@ -3,6 +3,7 @@ const formidable = require("formidable");
 const fs = require("fs");
 http
   .createServer((req, res) => {
+      res.setHeader('Access-Control-Allow-Origin', 'http://localhost')
     if (req.url === "/fileupload") {
       const form = new formidable.IncomingForm();
       form.parse(req, (err, fields, files) => {

@@ -123,20 +123,13 @@
               .querySelector(".test")
               .addEventListener(animationEvent, customFunction);
 
-            function customFunction(event) {
+            async function customFunction(event) {
               document
                 .querySelector(".test")
                 .removeEventListener(animationEvent, customFunction);
-              console.log("uplaod file", file);
-              const url = "http://localhost:8080/fileupload";
-              const formData = new FormData();
-              formData.append("file", file);
-              fetch(url, {
-                method: "POST",
-                body: formData
-              })
-                .then(response => console.log(response))
-                .catch(error => console.log("an error occured", error));
+                const a = await uploadFile(file)
+                console.log('ZZZZZZZZZZ', a)
+                
               // progressBar();
               // document
               //   .querySelector(".progress-bar-container")
@@ -156,7 +149,16 @@
             // Make code production quality - error handling + tests
           }
         }
-        console.log(ev.dataTransfer.files);
+        // console.log(ev.dataTransfer.files);
+      }
+
+      async function uploadFile (file) {
+        const url = 'http://localhost:8080/fileupload'
+        const formData = new FormData()
+        formData.append('file', file)
+        const data = await fetch(url, {method:'POST', body:formData})
+        return data
+
       }
 
       function dragOverHandler(ev) {
