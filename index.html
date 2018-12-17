@@ -108,9 +108,9 @@
           if (ev.dataTransfer.items[i].kind === "file") {
             var file = ev.dataTransfer.items[i].getAsFile();
             console.log("... file[" + i + "].name = " + file.name);
-            if(document.querySelector(".progress-bar-container")) {
-              console.log("add progress bar")
-              progressBar()
+            if (document.querySelector(".progress-bar-container")) {
+              console.log("add progress bar");
+              progressBar();
             }
             document.querySelector(".test").style.height = "auto";
             document.querySelector(".test").style.marginTop = "2rem";
@@ -119,14 +119,34 @@
             document.querySelector(".test").classList.add("fast");
 
             const animationEvent = whichAnimationEvent();
-            document.querySelector(".test").addEventListener(animationEvent, customFunction);
+            document
+              .querySelector(".test")
+              .addEventListener(animationEvent, customFunction);
 
             function customFunction(event) {
-              document.querySelector(".test").removeEventListener(animationEvent, customFunction);
-                progressBar();
-              document.querySelector(".progress-bar-container").classList.add("animated");
-              document.querySelector(".progress-bar-container").classList.add("zoomIn");
-              document.querySelector(".progress-bar-container").classList.add("fast");
+              document
+                .querySelector(".test")
+                .removeEventListener(animationEvent, customFunction);
+              console.log("uplaod file", file);
+              const url = "http://localhost:8080/fileupload";
+              const formData = new FormData();
+              formData.append("file", file);
+              fetch(url, {
+                method: "POST",
+                body: formData
+              })
+                .then(response => console.log(response))
+                .catch(error => console.log("an error occured", error));
+              // progressBar();
+              // document
+              //   .querySelector(".progress-bar-container")
+              //   .classList.add("animated");
+              // document
+              //   .querySelector(".progress-bar-container")
+              //   .classList.add("zoomIn");
+              // document
+              //   .querySelector(".progress-bar-container")
+              //   .classList.add("fast");
             }
             //TO-DO
             // Drop files
@@ -136,7 +156,7 @@
             // Make code production quality - error handling + tests
           }
         }
-        console.log(ev.dataTransfer.files)
+        console.log(ev.dataTransfer.files);
       }
 
       function dragOverHandler(ev) {
@@ -160,32 +180,33 @@
 
       function progressBar() {
         const markup = `
-        <div class="container progress-bar-container">
-        <div class="row">
-          <div class="col-md-6 mx-auto">
-            <div class="choose-file">
-              <span><img class="file" src="icons/file.svg" width="30"/></span>
-              <span class="icon"
-                ><img class="file" src="icons/success.svg" width="30"
-              /></span>
-              <span class="progress-span">
-                <span>arsenal.svg</span>
-                <span class="right">
-                  <span>96 </span> <span>Mb </span> <span>/ </span>
-                  <span>96 </span> <span>Mb </span> <span>-</span>
-                  <span>75%</span>
-                </span>
-                <div class="progress" style="height:6px;">
-                  <div class="progress-bar" style="width:75%;"></div>
-                </div>
-              </span>
-            </div>
-          </div>
-        </div>
-      </div>
-        
-        `
-        document.querySelector(".one").innerHTML  = markup + document.querySelector(".one").innerHTML
+                                <div class="container progress-bar-container">
+                                <div class="row">
+                                  <div class="col-md-6 mx-auto">
+                                    <div class="choose-file">
+                                      <span><img class="file" src="icons/file.svg" width="30"/></span>
+                                      <span class="icon"
+                                        ><img class="file" src="icons/success.svg" width="30"
+                                      /></span>
+                                      <span class="progress-span">
+                                        <span>arsenal.svg</span>
+                                        <span class="right">
+                                          <span>96 </span> <span>Mb </span> <span>/ </span>
+                                          <span>96 </span> <span>Mb </span> <span>-</span>
+                                          <span>75%</span>
+                                        </span>
+                                        <div class="progress" style="height:6px;">
+                                          <div class="progress-bar" style="width:75%;"></div>
+                                        </div>
+                                      </span>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                                
+                                `;
+        document.querySelector(".one").innerHTML =
+          markup + document.querySelector(".one").innerHTML;
       }
     </script>
   </body>

@@ -1,0 +1,27 @@
+{
+  "name": "progress-event-tutorial",
+  "version": "1.0.0",
+  "description": "File upload tutorial that demonstrates using the ProgressEvent interface",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Njunge11/progress-event-tutorial.git"
+  },
+  "keywords": [
+    "ProgessEvent",
+    "javascript"
+  ],
+  "author": "Njunge Njenga",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Njunge11/progress-event-tutorial/issues"
+  },
+  "homepage": "https://github.com/Njunge11/progress-event-tutorial#readme",
+  "dependencies": {
+    "formidable": "^1.2.1",
+    "http": "0.0.0"
+  }
+}
