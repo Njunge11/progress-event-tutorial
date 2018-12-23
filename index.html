@@ -69,6 +69,8 @@
         margin-top: 20px;
         margin-bottom: 40px;
       }
+    
+    
     </style>
   </head>
   <body>
@@ -101,64 +103,64 @@
     <script>
       function dropHandler(ev) {
         ev.preventDefault();
-        let count = [];
+        const formData = new FormData();
         for (var i = 0; i < ev.dataTransfer.items.length; i++) {
-          count.push(i);
-          // If dropped items aren't files, reject them
           if (ev.dataTransfer.items[i].kind === "file") {
             var file = ev.dataTransfer.items[i].getAsFile();
-            console.log("... file[" + i + "].name = " + file.name);
+            formData.append("file", file);
             if (document.querySelector(".progress-bar-container")) {
-              console.log("add progress bar");
-              progressBar();
+              progressBar(file.name)
+              uploadFile(formData)
             }
             document.querySelector(".test").style.height = "auto";
             document.querySelector(".test").style.marginTop = "2rem";
             document.querySelector(".test").classList.add("animated");
             document.querySelector(".test").classList.add("slideInUp");
             document.querySelector(".test").classList.add("fast");
-
             const animationEvent = whichAnimationEvent();
-            document
-              .querySelector(".test")
-              .addEventListener(animationEvent, customFunction);
+            document.querySelector(".test").addEventListener(animationEvent, customFunction);
 
-            async function customFunction(event) {
-              document
-                .querySelector(".test")
-                .removeEventListener(animationEvent, customFunction);
-                const a = await uploadFile(file)
-                console.log('ZZZZZZZZZZ', a)
-                
-              // progressBar();
-              // document
-              //   .querySelector(".progress-bar-container")
-              //   .classList.add("animated");
-              // document
-              //   .querySelector(".progress-bar-container")
-              //   .classList.add("zoomIn");
-              // document
-              //   .querySelector(".progress-bar-container")
-              //   .classList.add("fast");
+            function customFunction(event) {
+              document.querySelector(".test").removeEventListener(animationEvent, customFunction);
+              progressBar(file.name)
+              uploadFile(formData)
+              document.querySelector(".progress-bar-container").classList.add("animated");
+              document.querySelector(".progress-bar-container").classList.add("zoomIn");
+              document.querySelector(".progress-bar-container").classList.add("fast");
             }
-            //TO-DO
-            // Drop files
-            // Once the first file is loaded initiate animation sequence, upload file to server and load the progress bar
-            // for each subsequent file load the progress bar
-            // Utilize the ProgressEventInterface to display progression
-            // Make code production quality - error handling + tests
           }
         }
-        // console.log(ev.dataTransfer.files);
       }
 
-      async function uploadFile (file) {
-        const url = 'http://localhost:8080/fileupload'
-        const formData = new FormData()
-        formData.append('file', file)
-        const data = await fetch(url, {method:'POST', body:formData})
-        return data
+      function uploadFile (formData) {
+        let xhr = new XMLHttpRequest();
+        xhr.upload.onprogress = function (e) {
+          const loaded = formatBytes(e.loaded)
+          const total = formatBytes(e.total)
+          const percentage = (e.loaded * 100) / e.total
+          // console.log(loaded + ' / ' + total + ' / ' + Math.ceil(percentage)+'%')
+          document.querySelector('.loaded-size').textContent = loaded
+          document.querySelector('.total-size').textContent = total
+          document.querySelector('.percentage').textContent = Math.ceil(percentage) + '%'
+          document.querySelector('.progress-bar').style.width = Math.ceil(percentage) + '%'
+        }
+        xhr.upload.onloadend = function() {
+          document.querySelector('.status-icon').src='icons/success.svg'
+        }
+        xhr.open('POST', 'test.php', true)
+        xhr.send(formData)
 
+      }
+      function formatBytes (bytes) {
+        if(bytes === 0) {
+          return '0 bytes'
+        }
+        let k = 1024
+        let sizes = ['Bytes', 'KB', 'MB', 'GB']
+        let dm = 2
+        let i = Math.floor(Math.log(bytes) / Math.log(k))
+        let result =  parseFloat((bytes/Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i]
+        return result
       }
 
       function dragOverHandler(ev) {
@@ -180,33 +182,32 @@
         }
       }
 
-      function progressBar() {
+      function progressBar(fileName) {
         const markup = `
-                                <div class="container progress-bar-container">
-                                <div class="row">
-                                  <div class="col-md-6 mx-auto">
-                                    <div class="choose-file">
-                                      <span><img class="file" src="icons/file.svg" width="30"/></span>
-                                      <span class="icon"
-                                        ><img class="file" src="icons/success.svg" width="30"
-                                      /></span>
-                                      <span class="progress-span">
-                                        <span>arsenal.svg</span>
-                                        <span class="right">
-                                          <span>96 </span> <span>Mb </span> <span>/ </span>
-                                          <span>96 </span> <span>Mb </span> <span>-</span>
-                                          <span>75%</span>
-                                        </span>
-                                        <div class="progress" style="height:6px;">
-                                          <div class="progress-bar" style="width:75%;"></div>
-                                        </div>
-                                      </span>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                                
-                                `;
+                  <div class="container progress-bar-container">
+                  <div class="row">
+                    <div class="col-md-6 mx-auto">
+                      <div class="choose-file">
+                        <span><img class="file" src="icons/file.svg" width="30"/></span>
+                        <span class="icon"
+                          ><img class="file status-icon" src="icons/cancel.svg" width="30"
+                        /></span>
+                        <span class="progress-span">
+                      <span>${fileName}</span>
+                          <span class="right">
+                            <span class='loaded-size'></span><span> /</span>
+                            <span class='total-size'></span><span> -</span>
+                            <span class='percentage'></span>
+                          </span>
+                          <div class="progress" style="height:6px;">
+                            <div class="progress-bar"></div>
+                          </div>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+      `;
         document.querySelector(".one").innerHTML =
           markup + document.querySelector(".one").innerHTML;
       }
